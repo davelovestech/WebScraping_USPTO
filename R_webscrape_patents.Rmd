@@ -1,0 +1,63 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+
+```{r}
+## READING IN HTML FROM PERSONAL GENOME PROJECT AND SAVING DOWNLOAD LINK PATH INTO 'DATASTUFF' VARIABLE
+public_SNP_data <- read_html("https://my.pgp-hms.org/public_genetic_data?data_type=23andMe")
+datastuff <- public_SNP_data %>%
+  html_nodes(css="td:nth-child(7) a")
+```
+
+```{r}
+#html_nodes(css="td:nth-child(7) a")
+# a #htmlContent
+library('rvest')
+url <- "https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=web-sdmg-uspto.gov&sort_by=&query=telomerase+inhibitor"
+webpage <- read_html(url)
+patent_links <- webpage %>%
+  html_nodes("h4 a")
+patent_links
+
+```
+
+```{r}
+i <- 1
+print("==============================================================================================")
+while (i < length(patent_links)){
+  # print(patent_links[i])
+  # FIND PATENT NAMES
+  # start of name is first '>' less than sign
+  location_great <- gregexpr('>', patent_links[i])
+  start_of_name <- location_great[[1]][1]
+  # print(start_of_name)
+  # end of name is secon '<' greater than sign
+  location_less <- gregexpr('<', patent_links[i])
+  end_of_name <- location_less[[1]][2]
+  # print(end_of_name)
+  name <- substr(patent_links[i], start_of_name+1, end_of_name-1)
+  # print names
+  print(paste("Patent Name is: ", name))
+  # FIND PATENT HYPERLINKS
+  # links start with 'href="'
+  link_start <- regexpr('href="', patent_links[i])
+  #print(paste("links start with", link_start))
+  # links end with ".html" OR ".pdf"... that'd require two selectors, not happening, haha what about '">'
+  link_end <- regexpr('">', patent_links[i])
+  #print(paste("links start with", link_end))
+  link <- substr(patent_links[i], link_start+6, link_end-1)
+  print(paste("Link is: ", link))
+  i <- i + 1
+  print("==============================================================================================")
+
+}
+```
+
+```{r}
+  for (item in location_less) {
+    print(item)
+  }
+```
+
